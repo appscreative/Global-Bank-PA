@@ -9,347 +9,421 @@
 <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue:#0047ba;
-    --blue-hover:#2663c4;
-    --cyan:#00a7e1;
-    --stroke:#d5d8dd;
-    --stroke-soft:#dfe4ea;
-    --ink:#2f343d;
-    --ink-soft:#464a52;
-    --ink-strong:#161a23;
-    --muted:#7a8294;
-    --disabled-bg:#eaeaeb;
-    --disabled-ink:#5d6168;
+    --gbx-blue:#0047ba;
+    --gbx-blue-hover:#2663c4;
+    --gbx-cyan:#00a7e1;
+    --gbx-stroke:#d5d8dd;
+    --gbx-stroke-soft:#dfe4ea;
+    --gbx-ink:#2f343d;
+    --gbx-ink-soft:#464a52;
+    --gbx-ink-strong:#161a23;
+    --gbx-muted:#7a8294;
+    --gbx-disabled-bg:#eaeaeb;
+    --gbx-disabled-ink:#5d6168;
   }
 
   *,*::before,*::after{box-sizing:border-box}
 
   html,body{height:100%}
-
   body{
     margin:0;
     overflow:hidden;
     background:#fff;
-    color:var(--ink);
+    color:var(--gbx-ink);
     font-family:"Red Hat Display",system-ui,-apple-system,sans-serif;
     -webkit-font-smoothing:antialiased;
   }
 
-  .shell{display:flex;height:100vh}
-
-  /* ───────── Panel azul ───────── */
-  .brand{
-    width:50%;
-    flex:0 0 50%;
-    display:flex;
-    flex-direction:column;
-    padding:5rem;
-    background:var(--blue);
-    color:#fff;
-    border-radius:0 3rem 3rem 0;
+  /* ───────── Raíz blindada: no depende de html/body ni del host ───────── */
+  .gbx{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    overflow:auto;
+    background:#fff;
+    color:var(--gbx-ink);
+    font-family:"Red Hat Display",Arial,Helvetica,sans-serif!important;
+    font-size:16px;
+    line-height:1.5;
+    font-weight:400;
+    text-align:left;
+    -webkit-font-smoothing:antialiased;
+    container-type:inline-size;
   }
 
-  .brand-logo{width:285px;height:auto;display:block;margin-bottom:5rem}
-
-  .brand h1{
-    margin:0 0 3.5rem;
-    font-size:2.5rem;
-    line-height:1.2;
-    font-weight:700;
-    letter-spacing:-.01em;
-  }
-  .brand h1 span{display:block;color:var(--cyan)}
-
-  .benefits{
-    list-style:none;
+  /* Reset interno: neutraliza lo que herede del host */
+  .gbx *,.gbx *::before,.gbx *::after{
+    box-sizing:border-box!important;
     margin:0;
     padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:1.75rem;
-    max-width:34em;
+    font-family:inherit!important;
+    font-size:inherit;
+    line-height:inherit;
+    text-transform:none!important;
+    text-decoration:none;
+    float:none!important;
+    list-style:none;
   }
-  .benefits li{
-    display:flex;
-    align-items:center;
-    gap:1rem;
-    font-size:1.25rem;
-    font-weight:500;
-    line-height:1.45;
+
+  /* ───────── Reparto 50/50 con grid ───────── */
+  .gbx-shell{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    height:100%!important;
+    min-height:100%!important;
   }
-  .benefits .ico{
-    flex:0 0 auto;
-    padding:.375rem;
-    display:flex;
+
+  /* ───────── Panel azul ───────── */
+  .gbx-brand{
+    display:flex!important;
+    flex-direction:column!important;
+    padding:80px!important;
+    background:var(--gbx-blue)!important;
+    color:#fff!important;
+    border-radius:0 48px 48px 0!important;
+    overflow:hidden!important;
   }
-  .benefits svg{
-    width:1.5rem;
-    height:1.5rem;
-    fill:none;
-    stroke:currentColor;
-    stroke-width:1.4;
-    stroke-linecap:round;
-    stroke-linejoin:round;
+
+  .gbx-logo{
+    width:285px!important;
+    height:62px!important;
+    flex:0 0 auto!important;
+    display:block!important;
+    margin:0 0 80px 0!important;
+  }
+
+  .gbx-title{
+    margin:0 0 56px 0!important;
+    font-size:40px!important;
+    line-height:48px!important;
+    font-weight:700!important;
+    letter-spacing:-.4px!important;
+    color:#fff!important;
+  }
+  .gbx-title span{display:block!important;color:var(--gbx-cyan)!important}
+
+  .gbx-benefits{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:28px!important;
+    max-width:544px!important;
+  }
+  .gbx-benefits li{
+    display:flex!important;
+    align-items:center!important;
+    gap:16px!important;
+    font-size:20px!important;
+    line-height:29px!important;
+    font-weight:500!important;
+    color:#fff!important;
+  }
+  .gbx-benefits .gbx-ico{
+    flex:0 0 auto!important;
+    display:flex!important;
+    padding:6px!important;
+    color:#fff!important;
+  }
+  .gbx-benefits svg{
+    width:24px!important;
+    height:24px!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.4!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
   }
 
   /* ───────── Panel del formulario ───────── */
-  .pane{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    padding:2rem 2.25rem;
-    background:#fff;
+  .gbx-pane{
+    display:flex!important;
+    flex-direction:column!important;
+    min-width:0!important;
+    padding:32px 36px!important;
+    background:#fff!important;
   }
 
-  .pane-main{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-top:3rem;
+  .gbx-main{
+    flex:1 1 auto!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    margin-top:48px!important;
   }
 
-  .card{
-    width:100%;
-    max-width:48rem;
-    padding:3rem;
-    background:#fff;
-    border:1px solid var(--stroke);
-    border-radius:2rem;
-    box-shadow:0 1px 3px rgba(166,175,195,.4);
+  .gbx-card{
+    width:100%!important;
+    max-width:768px!important;
+    margin:0 auto!important;
+    padding:48px!important;
+    background:#fff!important;
+    border:1px solid var(--gbx-stroke)!important;
+    border-radius:32px!important;
+    box-shadow:0 1px 3px rgba(166,175,195,.4)!important;
   }
 
-  .card h2{
-    margin:0 0 .375rem;
-    font-size:1.875rem;
-    line-height:1.25;
-    font-weight:700;
-    color:var(--ink);
+  .gbx-card h2{
+    margin:0 0 6px 0!important;
+    font-size:30px!important;
+    line-height:38px!important;
+    font-weight:700!important;
+    color:var(--gbx-ink)!important;
   }
 
-  .card .sub{
-    margin:0 0 1.75rem;
-    font-size:1rem;
-    color:var(--ink-soft);
+  .gbx-card .gbx-sub{
+    margin:0 0 28px 0!important;
+    font-size:16px!important;
+    line-height:24px!important;
+    color:var(--gbx-ink-soft)!important;
   }
 
-  .field{margin-bottom:1.25rem}
+  .gbx-field{margin:0 0 20px 0!important}
 
-  .field label{
-    display:block;
-    margin-bottom:10px;
-    font-size:1rem;
-    font-weight:500;
-    color:var(--ink-strong);
+  .gbx-field label{
+    display:block!important;
+    margin:0 0 10px 0!important;
+    font-size:16px!important;
+    line-height:24px!important;
+    font-weight:500!important;
+    color:var(--gbx-ink-strong)!important;
   }
 
-  .control{position:relative}
+  .gbx-control{position:relative!important;display:block!important}
 
-  .control input{
-    width:100%;
-    padding:10px 12px 10px 3rem;
-    font:inherit;
-    font-size:1rem;
-    color:var(--ink);
-    background:#fff;
-    border:1px solid var(--stroke-soft);
-    border-radius:.375rem;
-    outline:none;
+  .gbx-control input{
+    display:block!important;
+    width:100%!important;
+    height:46px!important;
+    padding:10px 12px 10px 48px!important;
+    font-size:16px!important;
+    color:var(--gbx-ink)!important;
+    background:#fff!important;
+    border:1px solid var(--gbx-stroke-soft)!important;
+    border-radius:6px!important;
+    outline:none!important;
+    box-shadow:none!important;
+    appearance:none!important;
+    -webkit-appearance:none!important;
     transition:border-color .15s;
   }
-  .control input::placeholder{color:var(--muted)}
-  .control input:focus{border-color:var(--blue)}
+  .gbx-control input::placeholder{color:var(--gbx-muted)!important;opacity:1!important}
+  .gbx-control input:focus{border-color:var(--gbx-blue)!important}
 
-  .control .user-ico{
-    position:absolute;
-    left:1rem;
-    top:50%;
-    transform:translateY(-50%);
-    width:1rem;
-    height:1rem;
-    fill:none;
-    stroke:var(--disabled-ink);
-    stroke-width:1.6;
-    stroke-linecap:round;
-    pointer-events:none;
+  .gbx-control .gbx-user-ico{
+    position:absolute!important;
+    left:16px!important;
+    top:50%!important;
+    margin-top:-8px!important;
+    width:16px!important;
+    height:16px!important;
+    display:block!important;
+    fill:none!important;
+    stroke:var(--gbx-disabled-ink)!important;
+    stroke-width:1.6!important;
+    stroke-linecap:round!important;
+    pointer-events:none!important;
   }
 
-  .remember{
-    display:flex;
-    align-items:center;
-    gap:1rem;
-    margin-bottom:1.75rem;
-    font-size:1rem;
-    color:var(--ink-strong);
-    cursor:pointer;
-    user-select:none;
+  .gbx-remember{
+    display:flex!important;
+    align-items:center!important;
+    gap:16px!important;
+    margin:0 0 28px 0!important;
+    font-size:16px!important;
+    line-height:24px!important;
+    color:var(--gbx-ink-strong)!important;
+    cursor:pointer!important;
+    user-select:none!important;
   }
-  .remember input{position:absolute;opacity:0;width:0;height:0}
 
-  .remember .box{
-    flex:0 0 auto;
-    width:1.25rem;
-    height:1.25rem;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:1px solid var(--stroke-soft);
-    border-radius:.25rem;
-    transition:border-color .15s;
+  .gbx-remember input{
+    appearance:none!important;
+    -webkit-appearance:none!important;
+    flex:0 0 auto!important;
+    display:block!important;
+    position:relative!important;
+    width:20px!important;
+    height:20px!important;
+    margin:0!important;
+    background:#fff!important;
+    border:1px solid var(--gbx-stroke-soft)!important;
+    border-radius:4px!important;
+    cursor:pointer!important;
+    transition:border-color .15s,background .15s;
   }
-  .remember .box svg{opacity:0;transition:opacity .1s}
-  .remember input:checked ~ .box{border-color:var(--blue)}
-  .remember input:checked ~ .box svg{opacity:1}
-  .remember input:focus-visible ~ .box{outline:2px solid var(--blue);outline-offset:2px}
+  .gbx-remember input:checked{
+    background:var(--gbx-blue)!important;
+    border-color:var(--gbx-blue)!important;
+  }
+  .gbx-remember input:checked::after{
+    content:""!important;
+    position:absolute!important;
+    left:6px;
+    top:2px;
+    width:6px;
+    height:11px;
+    border:solid #fff;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .gbx-remember input:focus-visible{outline:2px solid var(--gbx-blue)!important;outline-offset:2px!important}
 
-  .submit{
-    width:100%;
-    padding:.75rem 1.75rem;
-    margin-bottom:1.75rem;
-    font:inherit;
-    font-size:1rem;
-    font-weight:500;
-    color:var(--disabled-ink);
-    background:var(--disabled-bg);
-    border:1px solid var(--disabled-bg);
-    border-radius:.375rem;
-    cursor:not-allowed;
+  .gbx-submit{
+    display:block!important;
+    width:100%!important;
+    height:48px!important;
+    margin:0 0 28px 0!important;
+    padding:0 28px!important;
+    font-size:16px!important;
+    font-weight:500!important;
+    color:var(--gbx-disabled-ink)!important;
+    background:var(--gbx-disabled-bg)!important;
+    border:1px solid var(--gbx-disabled-bg)!important;
+    border-radius:6px!important;
+    cursor:not-allowed!important;
     transition:background .15s,border-color .15s,color .15s;
   }
-  .submit:not(:disabled){
-    color:#fff;
-    background:var(--blue);
-    border-color:var(--blue);
-    cursor:pointer;
+  .gbx-submit:not(:disabled){
+    color:#fff!important;
+    background:var(--gbx-blue)!important;
+    border-color:var(--gbx-blue)!important;
+    cursor:pointer!important;
   }
-  .submit:not(:disabled):hover{background:var(--blue-hover);border-color:var(--blue-hover)}
-
-  .help{
-    max-width:375px;
-    margin:0 auto;
-    font-size:1.125rem;
-    font-weight:500;
-    line-height:1.45;
-    text-align:center;
-  }
-  .help a{color:var(--blue);font-weight:700;text-decoration:none}
-  .help a:hover{text-decoration:underline}
-
-  footer{
-    display:flex;
-    justify-content:space-between;
-    gap:1rem;
-    font-size:1rem;
-    color:var(--ink);
+  .gbx-submit:not(:disabled):hover{
+    background:var(--gbx-blue-hover)!important;
+    border-color:var(--gbx-blue-hover)!important;
   }
 
-  /* ───────── Adaptación ───────── */
-  @media (max-width:992px){
-    body{overflow:auto}
-    .shell{flex-direction:column;height:auto;min-height:100vh}
-    .brand{display:none}
-    .pane{padding:1.5rem}
-    .pane-main{margin-top:1.5rem}
-    .card{padding:2rem;border-radius:1.5rem}
+  .gbx-help{
+    max-width:375px!important;
+    margin:0 auto!important;
+    font-size:18px!important;
+    line-height:26px!important;
+    font-weight:500!important;
+    text-align:center!important;
+    color:var(--gbx-ink)!important;
+  }
+  .gbx-help a{color:var(--gbx-blue)!important;font-weight:700!important}
+  .gbx-help a:hover{text-decoration:underline!important}
+
+  .gbx-footer{
+    display:flex!important;
+    justify-content:space-between!important;
+    gap:16px!important;
+    padding-top:16px!important;
+    font-size:16px!important;
+    line-height:24px!important;
+    color:var(--gbx-ink)!important;
+  }
+
+  /* ───────── Se adapta al ancho de SU caja, no al del viewport ───────── */
+  @container (max-width:900px){
+    .gbx-shell{grid-template-columns:1fr!important;height:auto!important}
+    .gbx-brand{padding:32px!important;border-radius:0 0 32px 32px!important}
+    .gbx-logo{width:210px!important;height:46px!important;margin-bottom:32px!important}
+    .gbx-title{font-size:30px!important;line-height:38px!important;margin-bottom:32px!important}
+    .gbx-benefits{gap:16px!important}
+    .gbx-benefits li{font-size:17px!important;line-height:24px!important}
+    .gbx-pane{padding:24px!important}
+    .gbx-main{margin-top:24px!important}
+    .gbx-card{padding:24px!important;border-radius:20px!important}
+    .gbx-footer{font-size:14px!important}
   }
 </style>
 </head>
 <body>
 
-<div class="shell">
+<div class="gbx">
+  <div class="gbx-shell">
 
-  <aside class="brand">
-    <svg class="brand-logo" viewBox="0 0 285 62" role="img" aria-label="Global Bank">
-      <g fill="none" stroke="#fff" stroke-width="1.7">
-        <circle cx="27" cy="31" r="25.5"/>
-        <ellipse cx="27" cy="31" rx="10.5" ry="25.5"/>
-        <path d="M2.5 22.5h49M2.5 39.5h49"/>
-      </g>
-      <path d="M70 11v40" stroke="#fff" stroke-width="1.1" opacity=".8"/>
-      <text x="86" y="39" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="39" font-weight="400" letter-spacing="7">GLOBAL</text>
-      <text x="88" y="56" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="16" font-weight="500" letter-spacing="12.5">BANK</text>
-    </svg>
+    <aside class="gbx-brand">
+      <svg class="gbx-logo" width="285" height="62" viewBox="0 0 285 62" role="img" aria-label="Global Bank">
+        <g fill="none" stroke="#fff" stroke-width="1.7">
+          <circle cx="27" cy="31" r="25.5"/>
+          <ellipse cx="27" cy="31" rx="10.5" ry="25.5"/>
+          <path d="M2.5 22.5h49M2.5 39.5h49"/>
+        </g>
+        <path d="M70 11v40" stroke="#fff" stroke-width="1.1" opacity=".8"/>
+        <text x="86" y="39" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="39" font-weight="400" letter-spacing="7">GLOBAL</text>
+        <text x="88" y="56" fill="#fff" font-family="Red Hat Display, sans-serif" font-size="16" font-weight="500" letter-spacing="12.5">BANK</text>
+      </svg>
 
-    <h1>Desde aquí,<span>todo lo que quieres</span></h1>
+      <h1 class="gbx-title">Desde aquí,<span>todo lo que quieres</span></h1>
 
-    <ul class="benefits">
-      <li>
-        <span class="ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="7" y="2.5" width="10" height="13" rx="2"/>
-            <rect x="9.6" y="7" width="4.8" height="4.4" rx="1"/>
-            <path d="M10.3 7V6a1.7 1.7 0 0 1 3.4 0v1"/>
-            <path d="M4.6 12.8c1.5 0 2.3.9 3.3 1.5"/>
-            <path d="M3.6 15.6c2.1.3 3 1.5 4.9 2.3 1.5.6 2.9.4 4.4-.2l3.8-1.4c.9-.3 1.7.5 1.2 1.3-.3.5-.9.8-1.5 1l-4.6 1.6a6.8 6.8 0 0 1-4.7-.2L3.6 19"/>
-          </svg>
-        </span>
-        Desbloquea tu usuario y cambia tu contraseña desde donde estés.
-      </li>
-      <li>
-        <span class="ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="2.5" y="5.8" width="19" height="12.6" rx="2"/>
-            <path d="M2.5 9.8h19"/>
-            <path d="M5.8 14.6h3.6M13.4 14.6h4.8"/>
-          </svg>
-        </span>
-        Paga, transfiere y gestiona tus cuentas.
-      </li>
-      <li>
-        <span class="ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 3.4h8l4 4v13.2H6z"/>
-            <path d="M14 3.4v4h4"/>
-            <path d="M9 12h6M9 15.5h6"/>
-          </svg>
-        </span>
-        Consulta los movimientos de tus cuentas, tarjetas y préstamos.
-      </li>
-    </ul>
-  </aside>
-
-  <main class="pane">
-    <div class="pane-main">
-      <section class="card">
-        <h2>Banca en línea</h2>
-        <p class="sub">Escribe tu usuario para continuar</p>
-
-        <div class="field">
-          <label for="usuario">Usuario</label>
-          <div class="control">
-            <svg class="user-ico" viewBox="0 0 16 16" aria-hidden="true">
-              <circle cx="8" cy="5.4" r="2.6"/>
-              <path d="M3 13.4c.6-2.3 2.6-3.5 5-3.5s4.4 1.2 5 3.5"/>
-            </svg>
-            <input id="usuario" type="text" placeholder="Usuario" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="40">
-          </div>
-        </div>
-
-        <label class="remember" for="recordar">
-          <input type="checkbox" id="recordar">
-          <span class="box">
-            <svg width="11" height="8" viewBox="0 0 11 8" aria-hidden="true">
-              <path d="M10.0915 0.951972L10.0867 0.946075L10.0813 0.940568C9.90076 0.753564 9.61034 0.753146 9.42927 0.939309L4.16201 6.22962L1.58507 3.63469C1.40401 3.44841 1.11351 3.44879 0.932892 3.63584C0.755703 3.81933 0.755703 4.10875 0.932892 4.29224L0.932878 4.29225L0.934851 4.29424L3.58046 6.95832C3.73676 7.11955 3.94983 7.2 4.1473 7.2C4.36196 7.2 4.55963 7.11773 4.71406 6.9584L10.0468 1.60234C10.2436 1.4199 10.2421 1.1339 10.0915 0.951972ZM4.2327 6.30081L4.2317 6.2998C4.23206 6.30015 4.23237 6.30049 4.23269 6.30082L4.2327 6.30081Z" fill="#0047ba"/>
+      <ul class="gbx-benefits">
+        <li>
+          <span class="gbx-ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="7" y="2.5" width="10" height="13" rx="2"/>
+              <rect x="9.6" y="7" width="4.8" height="4.4" rx="1"/>
+              <path d="M10.3 7V6a1.7 1.7 0 0 1 3.4 0v1"/>
+              <path d="M4.6 12.8c1.5 0 2.3.9 3.3 1.5"/>
+              <path d="M3.6 15.6c2.1.3 3 1.5 4.9 2.3 1.5.6 2.9.4 4.4-.2l3.8-1.4c.9-.3 1.7.5 1.2 1.3-.3.5-.9.8-1.5 1l-4.6 1.6a6.8 6.8 0 0 1-4.7-.2L3.6 19"/>
             </svg>
           </span>
-          Recordar usuario
-        </label>
+          Desbloquea tu usuario y cambia tu contraseña desde donde estés.
+        </li>
+        <li>
+          <span class="gbx-ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="2.5" y="5.8" width="19" height="12.6" rx="2"/>
+              <path d="M2.5 9.8h19"/>
+              <path d="M5.8 14.6h3.6M13.4 14.6h4.8"/>
+            </svg>
+          </span>
+          Paga, transfiere y gestiona tus cuentas.
+        </li>
+        <li>
+          <span class="gbx-ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3.4h8l4 4v13.2H6z"/>
+              <path d="M14 3.4v4h4"/>
+              <path d="M9 12h6M9 15.5h6"/>
+            </svg>
+          </span>
+          Consulta los movimientos de tus cuentas, tarjetas y préstamos.
+        </li>
+      </ul>
+    </aside>
 
-        <button class="submit" id="continuar" type="submit" disabled>Continuar</button>
+    <main class="gbx-pane">
+      <div class="gbx-main">
+        <section class="gbx-card">
+          <h2>Banca en línea</h2>
+          <p class="gbx-sub">Escribe tu usuario para continuar</p>
 
-        <p class="help">
-          Necesitas ayuda? Llámanos al <a href="tel:+5078000000">800-0006</a> o
-          contáctanos por WhatsApp al <a href="https://wa.me/50767550006">+507 6755-0006</a>.
-        </p>
-      </section>
-    </div>
+          <div class="gbx-field">
+            <label for="usuario">Usuario</label>
+            <div class="gbx-control">
+              <svg class="gbx-user-ico" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                <circle cx="8" cy="5.4" r="2.6"/>
+                <path d="M3 13.4c.6-2.3 2.6-3.5 5-3.5s4.4 1.2 5 3.5"/>
+              </svg>
+              <input id="usuario" type="text" placeholder="Usuario" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="40">
+            </div>
+          </div>
 
-    <footer>
-      <div>Copyright © 2026 Global Bank Corp</div>
-      <div>Primero la gente</div>
-    </footer>
-  </main>
+          <label class="gbx-remember" for="recordar">
+            <input type="checkbox" id="recordar">
+            Recordar usuario
+          </label>
 
+          <button class="gbx-submit" id="continuar" type="submit" disabled>Continuar</button>
+
+          <p class="gbx-help">
+            Necesitas ayuda? Llámanos al <a href="tel:+5078000000">800-0006</a> o
+            contáctanos por WhatsApp al <a href="https://wa.me/50767550006">+507 6755-0006</a>.
+          </p>
+        </section>
+      </div>
+
+      <footer class="gbx-footer">
+        <div>Copyright © 2026 Global Bank Corp</div>
+        <div>Primero la gente</div>
+      </footer>
+    </main>
+
+  </div>
 </div>
 
 <script>
