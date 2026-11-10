@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for testeo on 2026-11-09T06:12:15Z
+# fly.toml app configuration file generated for globalbank on 2026-11-10T00:14:54Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'testeo'
+app = 'globalbank'
 primary_region = 'ams'
 
 [build]
